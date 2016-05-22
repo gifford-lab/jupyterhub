@@ -46,7 +46,7 @@ idea of what needs to be set up on the server before starting the hub:
 * Certificate files at `/root/${HOSTNAME}_all.pem` and
   `/root/${HOSTNAME}_all_certs.pem`, obtained by following the
   instructions
-  [here](https://github.com/gifford-lab/ipython-docker-servers/)
+  [here](https://github.com/gifford-lab/nbviewer/blob/master/certificates.md)
 
 ### Using the hub
 
