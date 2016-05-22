@@ -3,7 +3,7 @@ docker run -d \
     --name=jupyterhub \
     -p 443:8000 \
     --env-file /root/setup_oauth_tokens.list \
-    -e NVIDIA_STATUS="$(nvidia-smi)" \
+    -e NVIDIA_STATUS="$(nvidia-smi | grep -Fv failed)" \
     -v /opt/jupyterhub:/srv/jupyterhub \
     -v /etc/passwd:/etc/passwd:ro \
     -v /etc/group:/etc/group:ro \
