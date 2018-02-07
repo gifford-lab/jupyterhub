@@ -7,31 +7,34 @@ c.JupyterHub.admin_access = True
 
 c.JupyterHub.authenticator_class = 'mitoauthenticator.MITGroupOAuthenticator'
 
-c.MITGroupOAuthenticator.required_group = "cgs"
+# cgs doesn't exist in /etc/group in CSAIL Ubuntu 16.04.
+# To make docker work, we've manually added all members to group 'docker'.
+# So here by using this group, we effectively limit the access to cgs.
+c.MITGroupOAuthenticator.required_group = "docker"
 
 c.MITOAuthenticator.oauth_callback_url = os.environ['OAUTH_CALLBACK_URL']
 c.MITOAuthenticator.client_id = os.environ['OAUTH_CLIENT_ID']
 c.MITOAuthenticator.client_secret = os.environ['OAUTH_CLIENT_SECRET']
 
 # Whether to shutdown the proxy when the Hub shuts down.
-# 
+#
 # Disable if you want to be able to teardown the Hub while leaving the proxy
 # running.
-# 
+#
 # If both this and cleanup_servers are False, sending SIGINT to the Hub will
 # only shutdown the Hub, leaving everything else running.
-# 
+#
 # The Hub should be able to resume from database state.
 c.JupyterHub.cleanup_proxy = True
 
 # Whether to shutdown single-user servers when the Hub shuts down.
-# 
+#
 # Disable if you want to be able to teardown the Hub while leaving the single-
 # user servers running.
-# 
+#
 # If both this and cleanup_proxy are False, sending SIGINT to the Hub will only
 # shutdown the Hub, leaving everything else running.
-# 
+#
 # The Hub should be able to resume from database state.
 c.JupyterHub.cleanup_servers = False
 
@@ -42,14 +45,14 @@ c.JupyterHub.ssl_cert = '/root/server.crt'
 c.JupyterHub.ssl_key = '/root/server.key'
 
 # set of usernames of admin users
-# 
+#
 # If unspecified, only the user that launches the server will be admin.
 c.Authenticator.admin_users = set(["matted", "zeng", "thashim"])
 
 # Dictionary mapping authenticator usernames to JupyterHub users.
-# 
+#
 # Can be used to map OAuth service names to local users, for instance.
-# 
+#
 # Used in normalize_username.
 c.Authenticator.username_map = {"haoyangz" : "zeng"}
 
@@ -65,11 +68,13 @@ c.DockerSpawner.links = {"jupyterhub" : "jupyterhub"}
 
 c.SystemUserSpawner.container_image = 'giffordlab/jupyter-systemuser'
 
+# /cluster/zeng/cluster-management/passwd is a copy of /etc/passwd on a CSAIL Ubuntu 14.04 node
+# We can't directly use /etc/passwd on 16.04 as it no longer has the user info stored
 c.SystemUserSpawner.read_only_volumes = {"/cluster" : "/cluster",
-                                         "/etc/passwd" : "/etc/passwd",
+                                         "/cluster/zeng/cluster-management/passwd" : "/etc/passwd",
                                          "/etc/group" : "/etc/group"}
 
-c.SystemUserSpawner.extra_host_config = {"devices" : ["/dev/nvidiactl", 
+c.SystemUserSpawner.extra_host_config = {"devices" : ["/dev/nvidiactl",
                                                       "/dev/nvidia-uvm",
                                                       "/dev/nvidia0",
                                                       "/dev/nvidia1",

@@ -1,4 +1,4 @@
-FROM jupyterhub/jupyterhub-onbuild:0.6.1
+FROM jupyterhub/jupyterhub-onbuild:0.7.0
 
 MAINTAINER Matt Edwards <matted@mit.edu>
 
